@@ -1,0 +1,10 @@
+FROM certbot/certbot:latest
+
+WORKDIR /app
+
+VOLUME /etc/letsencrypt
+COPY cli.ini /etc/letsencrypt/cli.ini
+
+COPY hook.sh /app/hook.sh
+
+ENTRYPOINT certbot certonly --email ${EMAIL} -d ${DOMAIN}

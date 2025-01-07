@@ -1,0 +1,49 @@
+services:
+  nginx:
+    build:
+      context: nginx
+      args:
+        DOMAIN: ${DOMAIN}
+    ports:
+      - "80:80"
+    volumes:
+      - nginx-data:/etc/nginx
+      - www-data:/var/www/html
+
+  certbot-init:
+    build:
+      context: certbot
+      dockerfile: Dockerfile.init
+    environment:
+      EMAIL: ${EMAIL}
+      DOMAIN: ${DOMAIN}
+      LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
+      CERTIFICATE_NAME: ${CERTIFICATE_NAME}
+    volumes:
+      - ${OCI_PATH}:/root/.oci
+      - www-data:/var/www/html
+      - letsencrypt-data:/etc/letsencrypt
+      - letsencrypt-log:/var/log/letsencrypt
+
+  certbot-renew:
+    build:
+      context: certbot
+      dockerfile: Dockerfile.renew
+    environment:
+      TZ: Asia/Seoul
+      LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
+      CERTIFICATE_NAME: ${CERTIFICATE_NAME}
+    volumes:
+      - ${OCI_PATH}:/root/.oci
+      - www-data:/var/www/html
+      - letsencrypt-data:/etc/letsencrypt
+      - letsencrypt-log:/var/log/letsencrypt
+    restart: always
+    depends_on:
+      - certbot-init
+
+volumes:
+  nginx-data:
+  www-data:
+  letsencrypt-data:
+  letsencrypt-log:

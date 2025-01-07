@@ -1,0 +1,15 @@
+FROM certbot/certbot:latest
+
+WORKDIR /app
+
+RUN apk add --no-cache tzdata
+
+VOLUME /etc/letsencrypt
+COPY cli.ini /etc/letsencrypt/cli.ini
+
+COPY hook.sh /app/hook.sh
+
+COPY crontab.txt crontab.txt
+RUN /usr/bin/crontab crontab.txt
+
+ENTRYPOINT ["/usr/sbin/crond", "-f", "-l", "8"]
