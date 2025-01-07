@@ -6,5 +6,6 @@ VOLUME /etc/letsencrypt
 COPY cli.ini /etc/letsencrypt/cli.ini
 
 COPY hook.sh /app/hook.sh
+RUN chmod +x /app/hook.sh
 
 ENTRYPOINT certbot certonly --email ${EMAIL} -d ${DOMAIN}
