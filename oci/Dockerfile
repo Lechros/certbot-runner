@@ -12,6 +12,7 @@ RUN echo 'root:root' | chpasswd
 RUN ssh-keygen -A
 
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/^#LogLevel .*/LogLevel INFO/' /etc/ssh/sshd_config
 
 EXPOSE 22
 
