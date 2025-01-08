@@ -1,6 +1,7 @@
 FROM ghcr.io/oracle/oci-cli:latest
 
 USER root
+WORKDIR /root
 
 RUN yum -y update && \
   yum -y install openssh-server
