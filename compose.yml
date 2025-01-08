@@ -13,9 +13,9 @@ services:
   oci:
     build:
       context: oci
-    environment:
-      LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
-      CERTIFICATE_NAME: ${CERTIFICATE_NAME}
+      args:
+        LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
+        CERTIFICATE_NAME: ${CERTIFICATE_NAME}
     volumes:
       - ${OCI_PATH}:/root/.oci
 
