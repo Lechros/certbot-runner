@@ -2,7 +2,7 @@ FROM certbot/certbot:latest
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata
+RUN apk add --no-cache openssh sshpass tzdata
 
 VOLUME /etc/letsencrypt
 COPY cli.ini /etc/letsencrypt/cli.ini

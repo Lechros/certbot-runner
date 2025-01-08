@@ -10,29 +10,39 @@ services:
       - nginx-data:/etc/nginx
       - www-data:/var/www/html
 
+  oci:
+    build:
+      context: oci
+    environment:
+      LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
+      CERTIFICATE_NAME: ${CERTIFICATE_NAME}
+    volumes:
+      - ${OCI_PATH}:/root/.oci
+
   certbot-init:
     build:
       context: certbot
       dockerfile: Dockerfile.init
     environment:
+      OCI_CONTAINER_NAME: oci
       EMAIL: ${EMAIL}
       DOMAIN: ${DOMAIN}
-      LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
-      CERTIFICATE_NAME: ${CERTIFICATE_NAME}
     volumes:
       - ${OCI_PATH}:/root/.oci
       - www-data:/var/www/html
       - letsencrypt-data:/etc/letsencrypt
       - letsencrypt-log:/var/log/letsencrypt
+    depends_on:
+      - nginx
+      - oci
 
   certbot-renew:
     build:
       context: certbot
       dockerfile: Dockerfile.renew
     environment:
+      OCI_CONTAINER_NAME: oci
       TZ: Asia/Seoul
-      LOAD_BALANCER_OCID: ${LOAD_BALANCER_OCID}
-      CERTIFICATE_NAME: ${CERTIFICATE_NAME}
     volumes:
       - ${OCI_PATH}:/root/.oci
       - www-data:/var/www/html
@@ -40,7 +50,8 @@ services:
       - letsencrypt-log:/var/log/letsencrypt
     restart: always
     depends_on:
-      - certbot-init
+      - nginx
+      - oci
 
 volumes:
   nginx-data:

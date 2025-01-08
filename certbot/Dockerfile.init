@@ -2,6 +2,8 @@ FROM certbot/certbot:latest
 
 WORKDIR /app
 
+RUN apk add --no-cache openssh sshpass
+
 VOLUME /etc/letsencrypt
 COPY cli.ini /etc/letsencrypt/cli.ini
 
